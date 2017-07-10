@@ -1,5 +1,5 @@
 var http = require('http');
-var querystring = require('querystring');
+ 
 /**
  * Carga de los parámetros genéricos del servicio RESTful
  */
@@ -12,58 +12,41 @@ var PROXY_PASS = "ClaveV1-"; // Password
 
 var colecionICMS = 'http://icms-v2-0-des.junta-andalucia.es/rest/datasets/jda_novedades.json';
 var coleccionIgnacio = 'http://drupal.ignaciofarre.com/rest/ignacio-farre/get-experiencias';
-var postData = querystring.stringify({
-  'msg': 'Hello World!'
-});
+
 /**
  * Función encargada de recuperar todos los usuarios.
  */
-exports.getData = function (next) {
-//  request(coleccionIgnacio, function(error, response, body) {
-  console.log('body');
-//  });
-//  var options = {
-//    hostname: 'icms-v2-0-des.junta-andalucia.es',
-//    port: 80,
-//    path: '/rest/datasets/jda_novedades.json',
-//    method: 'POST',
-//    headers: {
-//      'Content-Type': 'application/json',
-//      'Content-Length': Buffer.byteLength(postData)
-//    }
-////  host: PROXY_HOST,
-////  port: PROXY_PORT,
-////  path: colecionICMS,
-////  headers: {
-////    'Proxy-Authorization': 'Basic ' + new Buffer(PROXY_USER + ':' + PROXY_PASS).toString('base64')
-////  }
-//  };
-//  var req = http.request(options, function (res) {
-//    console.log(res.statusCode);
-//    console.log(JSON.stringify(res.headers));
-//    res.setEncoding('utf8');
-//    res.on('data', function (chunk) {
-//      console.log(chunk);
-//    });
-//    res.on('end', function () {
-//      console.log('No more data in response.');
-//    });
-//  });
-//  req.on('error', function (e) {
-//    console.log(e.message);
-//  });
-//// write data to request body
-//  req.write(postData);
-//  req.end();
-//                // Se invoca el servicio RESTful con las opciones configuradas previamente y sin objeto JSON.
-//                invocarServicio(options, null, function (data, err) {
-//                if (err) {
-//                next(null, err);
-//                } else {
-//                next(data, null);
-//                }
-//                });
+exports.getData = function(next) {
+    var path = '/users';
+ 
+ var options = {
+  host: PROXY_HOST,
+  port: PROXY_PORT,
+  path: 'http://drupal.ignaciofarre.com/rest/ignacio-farre/get-experiencias',
+  headers: {
+    'Proxy-Authorization': 'Basic ' + new Buffer(PROXY_USER + ':' + PROXY_PASS).toString('base64')
+  }
 };
+//    var options = {
+//        host: host,
+//        port: port,
+//        path: path,
+//        method: 'GET',
+//        encoding: null
+//    };
+ 
+    // Se invoca el servicio RESTful con las opciones configuradas previamente y sin objeto JSON.
+    invocarServicio(options, null, function (users, err) {
+        if (err) {
+            next(null, err);
+        } else {
+            next(users, null);
+        }
+    });
+};
+
+
+
 /**
  * Función encargada de invocar los servicios RESTful y devolver
  * el objeto JSON correspondiente.
